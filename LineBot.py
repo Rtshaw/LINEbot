@@ -21,6 +21,7 @@ channel_secret = 'CHANNEL_SECRET'
 channel_access_token = 'CHANNEL_ACCESS_TOKEN'
 client_id = 'IMGUR_CLIENT_ID'  # IMGUR CLIENT ID
 client_secret = 'IMGUR_CLIENT_SECRET'  # IMGUR CLIENT SECRET
+
 album_id = 'IMGUR_ALBUM_ID'  # IMGUR ALBUM ID
 
 line_bot_api = LineBotApi(channel_access_token)
@@ -72,7 +73,7 @@ def ptt_beauty():
     all_page_url = soup.select('.btn.wide')[1]['href']
     start_page = get_page_number(all_page_url)
     page_term = 2  # crawler count
-    push_rate = 10  # 推文
+    push_rate = 20  # 推文
     index_list = []
     article_list = []
     for page in range(start_page, start_page - page_term, -1):
@@ -144,36 +145,70 @@ def handle_message(event):
                     MessageTemplateAction(
                         label='看妹子',
                         text='看妹子'
+                    ),
+                    MessageTemplateAction(
+                        label='看貓咪',
+                        text='看貓咪'
                     )
                 ]
             )
         )
         line_bot_api.reply_message(event.reply_token, buttons_template)
         return 0
-    if event.message.text == "看妹子":
+    if event.message.text == "批踢踢 表特板連結":
         content = ptt_beauty()
         line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=content))
+            event.reply_token, TextSendMessage(text=content))
         return 0
 
     if event.message.text == "看妹子":
         buttons_template = TemplateSendMessage(
-            alt_text='看妹子 template',
+            alt_text='看妹子',
             template=ButtonsTemplate(
                 title='選擇服務',
                 text='請選擇',
                 thumbnail_image_url='https://i.imgur.com/qKkE2bj.jpg',
                 actions=[
                     MessageTemplateAction(
-                        label='PTT 表特版 近期大於 10 推的文章',
-                        text='PTT 表特版 近期大於 10 推的文章'
+                        label='批踢踢 表特板連結',
+                        text='批踢踢 表特板連結'
+                    ),
+                    MessageTemplateAction(
+                        label='直接給我圖片',
+                        text='直接給我圖片'
                     )
                 ]
             )
         )
         line_bot_api.reply_message(event.reply_token, buttons_template)
         return 0
+
+    if event.message.text == "直接給我圖片":
+        client = ImgurClient(client_id, client_secret)
+        images = client.get_album_images(album_id_beauty)
+        index = random.randint(0, len(images) - 1)
+        url = images[index].link.replace('http', 'https')
+        image_message = ImageSendMessage(
+            original_content_url=url,
+            preview_image_url=url
+        )
+        line_bot_api.reply_message(
+            event.reply_token, image_message)
+        return 0
+
+    if event.message.text == "看貓咪":
+        client = ImgurClient(client_id, client_secret)
+        images = client.get_album_images(album_id_cat)
+        index = random.randint(0, len(images) - 1)
+        url = images[index].link.replace('http', 'https')
+        image_message = ImageSendMessage(
+            original_content_url=url,
+            preview_image_url=url
+        )
+        line_bot_api.reply_message(
+            event.reply_token, image_message)
+        return 0
+
     buttons_template = TemplateSendMessage(
         alt_text='目錄 template',
         template=ButtonsTemplate(
@@ -194,3 +229,7 @@ def handle_message(event):
 
 if __name__ == "__main__":
     app.run()
+
+
+
+
