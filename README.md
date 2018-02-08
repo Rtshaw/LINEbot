@@ -2,7 +2,9 @@
 
 ## BOT
 
-![](https://qr-official.line.me/M/WOw4GPzNbr.png)
+![image](https://imgur.com/RdVoORQ.jpg)
+
+
 
 ## LICENSE
   MIT
