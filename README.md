@@ -1,4 +1,4 @@
 # LineBot
 
-# LICENSE
+## LICENSE
   MIT
